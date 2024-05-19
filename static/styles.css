@@ -1,0 +1,28 @@
+.sidebar {
+    padding-top: 20px;
+}
+
+#leftchapters {
+    margin-top: 20px;
+}
+
+.content {
+    padding-top: 20px;
+    padding-right: 20px;
+}
+
+.content input[type="submit"] {
+    margin-bottom: 16px;
+    margin-right: 10px;
+}
+
+.seats {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+.seat {
+    margin-right: 10px;
+}

@@ -1,0 +1,48 @@
+{% extends "index.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+
+<div class="container mx-auto">
+    <h1>Users List</h1>
+    <div class="content">
+        <form action="" method="GET" class="form-check-inline d-flex">
+            {{ search_form|crispy }}
+            <input type="submit" value="🔎" class="btn btn-outline-secondary btn-sm">
+        </form>
+    </div>
+    {% if object_list %}
+    <form id="user_groups_form" action="{% url 'customer_interface:save_user_groups' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="email" value="{{ email }}">
+        <input type="hidden" name="check_in_manager_group_id" value="{{ check_in_manager_group.id }}">
+        <input type="hidden" name="gate_manager_group_id" value="{{ gate_manager_group.id }}">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Check In Manager</th>
+                    <th>Gate Manager</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in object_list %}
+                <tr>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <input type="checkbox" name="check_in_manager_users[]" value="{{ user.id }}" {% if check_in_manager_group in user.groups.all %} checked {% endif %} onchange="document.getElementById('user_groups_form').submit()">
+                    </td>
+                    <td>
+                        <input type="checkbox" name="gate_manager_users[]" value="{{ user.id }}" {% if gate_manager_group in user.groups.all %} checked {% endif %} onchange="document.getElementById('user_groups_form').submit()">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+    {% else %}
+    <p>No user was found for this email.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

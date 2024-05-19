@@ -1,0 +1,53 @@
+{% extends "base_user_interface.html" %}
+
+{% block content %}
+<body>
+    <h1>Ticket Customization</h1>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% for info in ticket_info %}
+            {% with ticket=info.ticket facilities=info.facilities %}
+                <h3>Ticket {{ forloop.counter }}</h3>
+                <p>Flight: {{ ticket.flight }}</p>
+                <p>Seat Class: {{ ticket.seat_class }}</p>
+                {% if ticket.seat_class == 'economy' %}
+                    <p>Free seats price: {{ ticket.flight.price_number_economy_seats }}</p>
+                    <p>Free seats: {{ free_economy_seats }}</p>
+                {% elif ticket.seat_class == 'business' %}
+                    <p>Free seats price: {{ ticket.flight.price_number_business_seats }}</p>
+                    <p>Free seats: {{ free_business_seats }}</p>
+                {% endif %}
+                {% for facility in facilities %}
+                    <p>{{  facility.facilities.facilities_name  }}
+                        <label for="facility_{{ ticket.id }}_{{ facility.id }}">
+                            <input type="checkbox" name="facilities_{{ ticket.id }}" id="facility_{{ ticket.id }}_{{ facility.id }}" value="{{ facility.id }}"
+                            {% if facility in ticket.facilities.all %} checked {% endif %}>
+                        </label> Price: {{ facility.price }}<br>
+                    </p>
+                {% endfor %}
+                <p><label for="seat_number_{{ ticket.id }}">Seat Number:</label>
+                <input type="text" name="seat_number_{{ ticket.id }}" id="seat_number_{{ ticket.id }}" value="{{ ticket.seat_number|default_if_none:'' }}">
+                </p>
+                <p><label for="first_name_{{ ticket.id }}">First Name:</label>
+                <input type="text" name="first_name_{{ ticket.id }}" id="first_name_{{ ticket.id }}" value="{{ ticket.first_name_|default_if_none:'' }}">
+                </p>
+                <p><label for="last_name_{{ ticket.id }}">Last Name:</label>
+                <input type="text" name="last_name_{{ ticket.id }}" id="last_name_{{ ticket.id }}" value="{{ ticket.last_name_|default_if_none:'' }}">
+                </p>
+            {% endwith %}
+        {% endfor %}
+
+        <button type="submit" class="btn btn-secondary">Save</button>
+    </form>
+</body>
+{% endblock %}

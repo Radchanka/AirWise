@@ -1,0 +1,31 @@
+{% extends "base_user_interface.html" %}
+
+{% block content %}
+    {% if order %}
+    <h2> Your order price: {{ order.price }}</h2>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <ul>
+            {% for ticket in order_tickets %}
+                <h3>Ticket {{ forloop.counter }}</h3>
+                <p>Flight: {{ ticket.flight }}</p>
+                <p>Seat Class: {{ ticket.seat_class }}</p>
+                {% if ticket.seat_number %}
+                    <p>Seat number: {{ ticket.seat_number }}</p>
+                {% endif %}
+                {% if ticket.flight_facilities.exists %}
+                    <p>Facilities:</p>
+                    <ul>
+                        {% for ticket_facility in ticket.ticketfacilities_set.all %}
+                            <p>{{ ticket_facility.flight_facilities.facilities.facilities_name }}</p>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <p>First name: {{ ticket.first_name }}</p>
+                <p>Last name: {{ ticket.last_name }}</p>
+            {% endfor %}
+        </ul>
+        <button class="btn btn-success" type="submit">Buy order</button>
+    </form>
+{% endblock %}

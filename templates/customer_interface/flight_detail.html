@@ -1,0 +1,47 @@
+{% extends "base_user_interface.html" %}
+
+{% block content %}
+<head>
+    <title>Flight Detail</title>
+</head>
+<body>
+    <h1>Flight Detail</h1>
+    {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+          {{ error_message }}
+        </div>
+    {% endif %}
+
+    <ul>
+        <li>Date and Time of Departure: {{ flight.date_time_of_departure }}</li>
+        <li>Date and Time of Arrival: {{ flight.date_time_of_arrival }}</li>
+        <li>Place of Departure: {{ flight.place_of_departure }}</li>
+        <li>Place of Arrival: {{ flight.place_of_arrival }}</li>
+        <li>There are economy seats left on the flight: {{ available_economy_seats }}</li>
+        <li>There are business seats left on the flight: {{ available_business_seats }}</li>
+        <h3>Free Economy Seats:</h3>
+        <ul class="seats">
+            {% for seat_number in free_economy_seats %}
+                <li class="seat">{{ seat_number }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Free Business Seats:</h3>
+        <ul class="seats">
+            {% for seat_number in free_business_seats %}
+                <li class="seat">{{ seat_number }}</li>
+            {% endfor %}
+        </ul>
+        <li>Price of Economy Seats: {{ flight.price_economy_seats }}</li>
+        <li>Price of Business Seats: {{ flight.price_business_seats }}</li>
+        <li>Price Number of Economy Seats: {{ flight.price_number_economy_seats }}</li>
+        <li>Price Number of Business Seats: {{ flight.price_number_business_seats }}</li>
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary" name="add_economy">Add economy to basket</button>
+        <button type="submit" class="btn btn-secondary" name="add_business">Add business to basket</button>
+    </form>
+</body>
+{% endblock %}

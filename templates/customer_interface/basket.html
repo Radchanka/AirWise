@@ -1,0 +1,39 @@
+{% extends "base_user_interface.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+<body>
+
+    {% for message in basket_messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+
+    <h1>Your basket</h1>
+
+    {% if ticket_form.errors %}
+        {% for error in ticket_form.errors %}
+            <h3>Error:</h3>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'customer_interface:basket' %}" novalidate>
+        {% csrf_token %}
+        {{ ticket_form|crispy }}
+        <button type="submit" class="btn btn-secondary" name="next">Next</button>
+        <button type="submit" class="btn btn-secondary" name="add_ticket">Add Ticket</button>
+    </form>
+
+    <h2>Potential purchases:</h2>
+    <ul>
+        {% for ticket in tickets %}
+            <h3>Ticket {{ forloop.counter }}</h3>
+            <p>Flight: {{ ticket.flight }}</p>
+            <p>Seat Class: {{ ticket.seat_class }}</p>
+            <form method="post" action="{% url 'customer_interface:delete_ticket' ticket.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+        {% endfor %}
+    </ul>
+</body>
+{% endblock %}

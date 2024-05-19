@@ -1,0 +1,28 @@
+{% extends "base_user_interface.html" %}
+
+{% block content %}
+<body>
+    <h1>Creating order</h1>
+
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {% for ticket in tickets %}
+            <h3>Ticket {{ forloop.counter }}
+            <input type="checkbox" name="ticket_{{ ticket.id }}" checked>
+            <br>
+            </h3>
+            <p>Flight: {{ ticket.flight }}</p>
+            <p>Seat Class: {{ ticket.seat_class }}</p>
+        {% endfor %}
+        <button type="submit" class="btn btn-secondary" name="create_order">Create Order</button>
+    </form>
+</body>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Input Ticket ID</title>
+</head>
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="ticket_id">Ticket ID:</label>
+        <input type="text" name="ticket_id" id="ticket_id">
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

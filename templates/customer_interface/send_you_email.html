@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container mx-auto">
+    <h1>We have sent an invoice with payment to your e-mail address, you can pay for your order within four hours. Thank you for choosing us !</h1>
+    <p>
+        <a href="{% url 'customer_interface:basket' %}" class="btn btn-primary btn-lg">Basket</a>
+        <a href="{% url 'customer_interface:home' %}" class="btn btn-primary btn-lg">Home</a>
+    </p>
+</div>
+{% endblock %}

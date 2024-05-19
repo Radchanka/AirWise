@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container text-center">
+    <h1>Авторизация</h1>
+
+    <form class="form-horizontal" method="post">
+        {% csrf_token %}
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        <div class="form-group">
+            {% for f in form %}
+            <label for="{{ f.id_for_label }}" class="col-sm-2 control-label">{{ f.label }}</label>
+            <div class="col-sm-10">
+                {{ f }}
+                <div class="form-error">{{ f.errors }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-group mt-3">
+            <div class="col-sm-offset-2 col-sm-10">
+                <p><button type="submit" class="btn btn-primary btn-lg">Войти</button></p>
+            </div>
+        </div>
+    </form>
+
+    <p>У вас ещё нет аккаунта? <a href="{% url 'users:registration' %}">Зарегистрироваться</a></p>
+
+    <div class="row">
+        <div class="col-md-8 mx-auto social-container my-2 order-md-1">
+            <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-primary mb-2" style="text-decoration: none; color: #ffffff;">
+                Login With Google
+            </a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

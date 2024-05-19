@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+{% load tailwind_filters %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    {% if flight_form.errors %}
+        {% for error in flight_form.errors %}
+        {% endfor %}
+    {% endif %}
+
+
+<div class="container mx-auto">
+    <h1>Create Flight</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ flight_form|crispy }}
+        <hr>
+        <h3>Flight Facilities</h3>
+        {{ flight_facilities_formset.management_form }}
+        <div id="formset-container">
+            {% for form in flight_facilities_formset %}
+                <div class="formset-row">
+                    {{ form|crispy }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-secondary" name="add_facility" value="True">Add Facility</button>
+        <button type="submit" class="btn btn-secondary" name="create">Create</button>
+    </form>
+</div>
+{% endblock %}

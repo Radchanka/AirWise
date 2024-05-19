@@ -1,0 +1,86 @@
+{% extends "index.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+
+<div class="container mx-auto">
+    <h1>Flight stats</h1>
+    <h3>{{ flight.place_of_departure }} - {{ flight.place_of_arrival }}</h3>
+    <p>Flight departs - {{ flight.date_time_of_departure }} </p>
+    <p>Flight arrives - {{ flight.date_time_of_arrival }} </p>
+    <p>Total economy seats - {{ flight.available_economy_seats }}. Seats sold: {{ total_economy_tickets }}</p>
+    <p>Total business seats - {{ flight.available_business_seats }}. Seats sold: {{total_business_tickets }}</p>
+    <div class="content">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Economy Tickets</th>
+                    <th>Seat Number</th>
+                    <th>Check In</th>
+                    <th>Gate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    {% if ticket.seat_class == 'economy' %}
+                        <tr>
+                            <td>{{ ticket.order.user.email }} ({{ ticket.first_name }} {{ ticket.last_name }})</td>
+                            <td>{% if ticket.seat_number %} {{ ticket.seat_number }} {% else %} Without a seat {% endif %}</td>
+                            <td>
+                                {% if ticket.check_in_manager %}
+                                    <span style="color: green;">&#10004;</span> <!-- Галочка -->
+                                {% else %}
+                                    <span style="color: red;">&#10008;</span> <!-- Крестик -->
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if ticket.gate_manager %}
+                                    <span style="color: green;">&#10004;</span> <!-- Галочка -->
+                                {% else %}
+                                    <span style="color: red;">&#10008;</span> <!-- Крестик -->
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Business Tickets</th>
+                    <th>Seat Number</th>
+                    <th>Check In</th>
+                    <th>Gate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    {% if ticket.seat_class == 'business' %}
+                        <tr>
+                            <td>{{ ticket.order.user.email }} ({{ ticket.first_name }} {{ ticket.last_name }})</td>
+                            <td>{% if ticket.seat_number %} {{ ticket.seat_number }} {% else %} Without a seat {% endif %}</td>
+                            <td>
+                                {% if ticket.check_in_manager %}
+                                    <span style="color: green;">&#10004;</span> <!-- Галочка -->
+                                {% else %}
+                                    <span style="color: red;">&#10008;</span> <!-- Крестик -->
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if ticket.gate_manager %}
+                                    <span style="color: green;">&#10004;</span> <!-- Галочка -->
+                                {% else %}
+                                    <span style="color: red;">&#10008;</span> <!-- Крестик -->
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

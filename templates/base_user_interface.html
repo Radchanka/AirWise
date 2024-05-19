@@ -1,0 +1,106 @@
+{% load static %}
+{% load crispy_forms_filters %}
+{% load filter %}
+
+
+<html>
+<head>
+	<title>{{title}}</title>
+    <link href="{% static 'styles.css' %}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+          crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <!-- Sidebar content -->
+                    <h2>DjangoAir</h2>
+                    <ul id="leftchapters">
+						<p><a href="{% url 'customer_interface:basket' %}" class="btn btn-primary btn-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-basket" viewBox="0 0 16 16">
+                              <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1v4.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 13.5V9a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h1.217L5.07 1.243a.5.5 0 0 1 .686-.172zM2 9v4.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V9zM1 7v1h14V7zm3 3a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 4 10m2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 6 10m2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3A.5.5 0 0 1 8 10m2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5m2 0a.5.5 0 0 1 .5.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 1 .5-.5"/>
+                            </svg>
+                            Basket {% if basket_items_count %} ({{ basket_items_count }}) {% endif %}
+                        </a></p>
+						<p><a href="{% url 'customer_interface:home' %}" class="btn btn-primary btn-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+                              <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
+                            </svg>
+                            Home
+                        </a></p>
+					</ul>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="content">
+                    {% block content %}
+                    <h1>Flight List</h1>
+                        <form action="" method="GET" class="form-check-inline d-flex">
+                            {{ search_form|crispy }}
+                            <input type="submit" value="🔎" class="btn btn-outline-secondary btn-sm">
+                        </form>
+                        {% if object_list %}
+                            <ul>
+                                {% for flight in object_list %}
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th style="min-width: 500px;">Flight</th>
+                                                {% if perms.customer_interface.add_flight %}
+                                                    <th>Sold</th>
+                                                    <th>Check In</th>
+                                                    <th>Gate</th>
+                                                    <th>Stats</th>
+                                                {% endif %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><a href="{% url 'customer_interface:flight_detail' flight.pk %}">{{ flight.place_of_departure }} - {{ flight.place_of_arrival }}: {{ flight.date_time_of_departure }}</a></td>
+                                                {% if perms.customer_interface.add_flight %}
+                                                    <td><span class="btn btn-info">Sold: {{ flight_tickets|flight_ticket_value:flight.pk }}</span></td>
+                                                    <td>
+                                                        {% if flight_tickets|flight_ticket_value:flight.pk > check_in_tickets|check_in_tickets_value:flight.pk %}
+                                                            {% if flight.date_time_of_departure|time_until_now > 3600 %}
+                                                                <span class="btn btn-warning">Check In: {{ check_in_tickets|check_in_tickets_value:flight.pk }}</span>
+                                                            {% else %}
+                                                                <span class="btn btn-danger">Check In: {{ check_in_tickets|check_in_tickets_value:flight.pk }}</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <span class="btn btn-success">Check In: {{ check_in_tickets|check_in_tickets_value:flight.pk }}</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if flight_tickets|flight_ticket_value:flight.pk > gate_tickets|gate_tickets_value:flight.pk %}
+                                                            {% if flight.date_time_of_departure|time_until_now > 1800 %}
+                                                                <span class="btn btn-warning">Check In: {{ gate_tickets|gate_tickets_value:flight.pk }}</span>
+                                                            {% else %}
+                                                                <span class="btn btn-danger">Check In: {{ gate_tickets|gate_tickets_value:flight.pk }}</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <span class="btn btn-success">Check In: {{ gate_tickets|gate_tickets_value:flight.pk }}</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td><a href="{% url 'customer_interface:flight_stats' pk=flight.pk %}" class="btn btn-secondary">Flight Stats</a></td>
+                                                {% endif %}
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>No flight was found for this request.</p>
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
